@@ -3,6 +3,11 @@ from warehouse import WarehouseLogistics  # Assuming your class is in this file
 
 app = Flask(__name__)
 
+# A welcome message
+@app.route('/')
+def home():
+    return "🚀 This Warehouse Logistics API was built by a PSITian! Use /calculate_cost to access the API."
+
 # Initialize the warehouse system (you could move this to a config file)
 def initialize_warehouse():
     warehouse = WarehouseLogistics()
