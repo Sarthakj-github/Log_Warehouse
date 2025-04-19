@@ -1,3 +1,4 @@
+from math import ceil
 class WarehouseLogistics:
     def __init__(self):
         self.stock_center_map = {}  # Maps stock to (center, unit_weight)
@@ -61,7 +62,7 @@ class WarehouseLogistics:
         # Base case: no centers to visit
         if not active_centers:
             return 0
-            
+        # print(center_loads)
         min_cost = float('inf')
         
         # Try starting from each center
@@ -85,8 +86,8 @@ class WarehouseLogistics:
         """
         # print(current,current_weight)
         # Determine transport cost factor based on weight
-        cost_factor = 10 if current_weight <= 5 else 18
-        
+        cost_factor = 10 + max((ceil(current_weight/5)-1),0)*8
+        # print(current,cost_factor)
         # If we're at destination and all centers visited
         if current == destination and not remaining:
             return 0
@@ -99,16 +100,15 @@ class WarehouseLogistics:
             
             # Case 1: Moving to destination (only allowed if all centers visited)
             if neighbor == destination:
-                if not remaining:
-                    total_cost = transport_cost + self._calculate_route_cost(
-                        current=neighbor,
-                        visited=visited,
-                        remaining=remaining,
-                        current_weight=0,
-                        destination=destination,
-                        center_loads=center_loads
-                    )
-                    min_cost = min(min_cost, total_cost)
+                total_cost = transport_cost + self._calculate_route_cost(
+                    current=neighbor,
+                    visited=visited,
+                    remaining=remaining,
+                    current_weight=0,
+                    destination=destination,
+                    center_loads=center_loads
+                )
+                min_cost = min(min_cost, total_cost)
             
             # Case 2: Moving to an unvisited center
             elif neighbor in remaining:
@@ -151,6 +151,8 @@ if __name__ == "__main__":
         warehouse.add_route(point1, point2, dist)
     
     # Calculate transport cost for an order
-    order = {'A': 1, 'B': 1, 'D': 1}  # 1 unit each of A, B, D
+    order = {
+"A": 1, "B": 2, "C": 1, "D": 5, "E": 1, "F": 1, "G": 2, "H": 1, "I": 1
+}
     min_cost = warehouse.find_min_transport_cost(order)
     print(f"Minimum transport cost to L1: {min_cost}")
